@@ -4,14 +4,19 @@ import subprocess
 from time import localtime, strftime
 from ast import literal_eval
 
+
 def run_command(cmd):
     print(f"Running command: {cmd}")
-    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     stdout, stderr = process.communicate()
     print(f"stdout: {stdout.decode()}")
     print(f"stderr: {stderr.decode()}")
 
+
 import os
+
 
 def safe_delete(filepath):
     try:
@@ -68,10 +73,12 @@ if __name__ == "__main__":
 
     with open(filename, "r") as inFile:
         print(strftime("%H:%M:%S", localtime()) + ": Loading the PageRank results")
-        
+
         for line in inFile:
             line = line.rstrip()
-            if line.strip():  # Check if the line is not empty after stripping whitespace
+            if (
+                line.strip()
+            ):  # Check if the line is not empty after stripping whitespace
                 temp_array = line.split("\t")
                 if len(temp_array) == 2:
                     node1 = temp_array[0]
@@ -110,7 +117,9 @@ if __name__ == "__main__":
 
     print(strftime("%H:%M:%S", localtime()) + ": Generating initial partition")
 
-    with open(os.path.join(dir_final_code, "partition_" + network_name + ".txt"), 'w') as outFile:
+    with open(
+        os.path.join(dir_final_code, "partition_" + network_name + ".txt"), 'w'
+    ) as outFile:
         for n in neighbours:
             max_PR = PageRank[n]
             max_node = n
@@ -128,7 +137,15 @@ if __name__ == "__main__":
     comm_louvain = os.path.join(dir_louvain, "Sample_undig_node2comm_level1.txt")
     part_louvain = os.path.join(dir_final_code, "partition_" + network_name + ".txt")
 
-    runLouvain_PR(dir_louvain, graph_louvain, weights_louvain, tree_louvain, comm_louvain, os.path.join(dir_data, network_name + ".txt"), part_louvain)
+    runLouvain_PR(
+        dir_louvain,
+        graph_louvain,
+        weights_louvain,
+        tree_louvain,
+        comm_louvain,
+        os.path.join(dir_data, network_name + ".txt"),
+        part_louvain,
+    )
 
     print(strftime("%H:%M:%S", localtime()) + ": Loading the communities")
 
@@ -144,11 +161,18 @@ if __name__ == "__main__":
                 communities[community] = []
             communities[community].append(node)
 
-    print(strftime("%H:%M:%S", localtime()) + ": (" + str(len(communities)) + " communities)")
+    print(
+        strftime("%H:%M:%S", localtime())
+        + ": ("
+        + str(len(communities))
+        + " communities)"
+    )
 
     print(strftime("%H:%M:%S", localtime()) + ": Processing")
 
-    comm_louvain_analysis = os.path.join(dir_louvain, network_name + "_allValidCommunities.txt")
+    comm_louvain_analysis = os.path.join(
+        dir_louvain, network_name + "_allValidCommunities.txt"
+    )
 
     with open(comm_louvain_analysis, 'w') as outFile:
         nb_main_comm = 0
@@ -168,30 +192,65 @@ if __name__ == "__main__":
                         if node1 in neighbours[node2]:
                             connectivity += 1
                             weighted_connectivity += weights[node1 + "-" + node2]
-                connectivity = connectivity / (len(communities[comm]) * (len(communities[comm]) - 1))
-                weighted_connectivity = weighted_connectivity / (len(communities[comm]) * (len(communities[comm]) - 1))
-                outFile.write("m" + str(nb_main_comm) + "\t" + str(weighted_connectivity) + "\t" + txt.rstrip() + "\n")
+                connectivity = connectivity / (
+                    len(communities[comm]) * (len(communities[comm]) - 1)
+                )
+                weighted_connectivity = weighted_connectivity / (
+                    len(communities[comm]) * (len(communities[comm]) - 1)
+                )
+                outFile.write(
+                    "m"
+                    + str(nb_main_comm)
+                    + "\t"
+                    + str(weighted_connectivity)
+                    + "\t"
+                    + txt.rstrip()
+                    + "\n"
+                )
             else:
                 nb_invalid_comm += 1
 
-    print(strftime("%H:%M:%S", localtime()) + ": " + str(nb_main_comm) + " communities extracted, " + str(len(communities_needing_recursion)) + " sent to recursion")
+    print(
+        strftime("%H:%M:%S", localtime())
+        + ": "
+        + str(nb_main_comm)
+        + " communities extracted, "
+        + str(len(communities_needing_recursion))
+        + " sent to recursion"
+    )
 
     print(strftime("%H:%M:%S", localtime()) + ": Recursion")
 
     i = 0
     while i < len(communities_needing_recursion):
         comm = str(i + 1)
-        print(strftime("%H:%M:%S", localtime()) + ":\tSubcommunity " + comm + "/" + str(len(communities_needing_recursion)) + " (" + str(len(communities_needing_recursion[i])) + " nodes)")
+        print(
+            strftime("%H:%M:%S", localtime())
+            + ":\tSubcommunity "
+            + comm
+            + "/"
+            + str(len(communities_needing_recursion))
+            + " ("
+            + str(len(communities_needing_recursion[i]))
+            + " nodes)"
+        )
 
         print(strftime("%H:%M:%S", localtime()) + ":\t\tSubnetwork extraction")
 
-        subnetwork = os.path.join(dir_louvain, network_name + "_subnetwork_community_" + comm + ".txt")
-        with open(subnetwork, 'w') as outFileSN, open(os.path.join(dir_data, network_name + ".txt"), 'r') as inFile:
+        subnetwork = os.path.join(
+            dir_louvain, network_name + "_subnetwork_community_" + comm + ".txt"
+        )
+        with open(subnetwork, 'w') as outFileSN, open(
+            os.path.join(dir_data, network_name + ".txt"), 'r'
+        ) as inFile:
             for line in inFile:
                 temp_array = line.rstrip().split("\t")
                 node1 = temp_array[0]
                 node2 = temp_array[1]
-                if node1 in communities_needing_recursion[i] and node2 in communities_needing_recursion[i]:
+                if (
+                    node1 in communities_needing_recursion[i]
+                    and node2 in communities_needing_recursion[i]
+                ):
                     outFileSN.write(line)
 
         print(strftime("%H:%M:%S", localtime()) + ":\t\tLoading the PageRank results")
@@ -208,7 +267,9 @@ if __name__ == "__main__":
 
         print(strftime("%H:%M:%S", localtime()) + ":\t\tGenerating initial partition")
 
-        part_louvain = os.path.join(dir_louvain, "partition_" + network_name + "_" + comm + ".txt")
+        part_louvain = os.path.join(
+            dir_louvain, "partition_" + network_name + "_" + comm + ".txt"
+        )
         with open(part_louvain, 'w') as outFileSN:
             for n in communities_needing_recursion[i]:
                 max_PR = PageRankSN[n]
@@ -222,12 +283,30 @@ if __name__ == "__main__":
 
         print(strftime("%H:%M:%S", localtime()) + ":\t\tRunning Louvain")
 
-        graph_louvain = os.path.join(dir_louvain, network_name + "_subnetwork_community_" + comm + "_graph.bin")
-        weights_louvain = os.path.join(dir_louvain, network_name + "_subnetwork_community_" + comm + "_graph.weights")
-        tree_louvain = os.path.join(dir_louvain, network_name + "_subnetwork_community_" + comm + "_graph.tree")
-        comm_louvain = os.path.join(dir_louvain, network_name + "_subnetwork_community_" + comm + "_graph_node2comm_level1")
+        graph_louvain = os.path.join(
+            dir_louvain, network_name + "_subnetwork_community_" + comm + "_graph.bin"
+        )
+        weights_louvain = os.path.join(
+            dir_louvain,
+            network_name + "_subnetwork_community_" + comm + "_graph.weights",
+        )
+        tree_louvain = os.path.join(
+            dir_louvain, network_name + "_subnetwork_community_" + comm + "_graph.tree"
+        )
+        comm_louvain = os.path.join(
+            dir_louvain,
+            network_name + "_subnetwork_community_" + comm + "_graph_node2comm_level1",
+        )
 
-        runLouvain_PR(dir_louvain, graph_louvain, weights_louvain, tree_louvain, comm_louvain, subnetwork, part_louvain)
+        runLouvain_PR(
+            dir_louvain,
+            graph_louvain,
+            weights_louvain,
+            tree_louvain,
+            comm_louvain,
+            subnetwork,
+            part_louvain,
+        )
 
         print(strftime("%H:%M:%S", localtime()) + ":\t\tProcessing the results")
 
@@ -241,7 +320,9 @@ if __name__ == "__main__":
                     subcommunities[community] = []
                 subcommunities[community].append(node)
 
-        comm_louvain_analysis = os.path.join(dir_louvain, network_name + "_analysis_subcommunities_" + comm + ".txt")
+        comm_louvain_analysis = os.path.join(
+            dir_louvain, network_name + "_analysis_subcommunities_" + comm + ".txt"
+        )
 
         nb_subcomm = 0
         nb_added_for_recursion = 0
@@ -262,14 +343,33 @@ if __name__ == "__main__":
                         if node1 in neighbours[node2]:
                             connectivity += 1
                             weighted_connectivity += weights[node1 + "-" + node2]
-                connectivity = connectivity / (len(subcommunities[subcomm]) * (len(subcommunities[subcomm]) - 1))
-                weighted_connectivity = weighted_connectivity / (len(subcommunities[subcomm]) * (len(subcommunities[subcomm]) - 1))
+                connectivity = connectivity / (
+                    len(subcommunities[subcomm]) * (len(subcommunities[subcomm]) - 1)
+                )
+                weighted_connectivity = weighted_connectivity / (
+                    len(subcommunities[subcomm]) * (len(subcommunities[subcomm]) - 1)
+                )
                 with open(comm_louvain_analysis, 'a') as outFile:
-                    outFile.write("s" + str(i + 1) + "\t" + str(weighted_connectivity) + "\t" + txt.rstrip() + "\n")
+                    outFile.write(
+                        "s"
+                        + str(i + 1)
+                        + "\t"
+                        + str(weighted_connectivity)
+                        + "\t"
+                        + txt.rstrip()
+                        + "\n"
+                    )
             else:
                 nb_invalid_comm += 1
 
-        print(strftime("%H:%M:%S", localtime()) + ":\t\t" + str(nb_subcomm) + " subcommunities extracted, " + str(nb_added_for_recursion) + " sent to recursion")
+        print(
+            strftime("%H:%M:%S", localtime())
+            + ":\t\t"
+            + str(nb_subcomm)
+            + " subcommunities extracted, "
+            + str(nb_added_for_recursion)
+            + " sent to recursion"
+        )
 
         if nb_subcomm + nb_invalid_comm + nb_added_for_recursion == 1:
             print(strftime("%H:%M:%S", localtime()) + ": Done. (safety break)")

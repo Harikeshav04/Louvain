@@ -1,9 +1,12 @@
 from ast import literal_eval
+import sys
+import os
+
 
 def convert_to_undirected(input_file, output_file):
     try:
         inFile = open(input_file, 'r')
-        
+
         min_node = float('inf')
         max_node = float('-inf')
         edges = {}
@@ -23,7 +26,7 @@ def convert_to_undirected(input_file, output_file):
                 max_node = node2
             if node2 < min_node:
                 min_node = node2
-        
+
         inFile.close()
 
         # Write output to the specified file
@@ -47,16 +50,20 @@ def convert_to_undirected(input_file, output_file):
     except IOError as e:
         print(f"Error: Unable to open or write to file '{output_file}': {e}")
 
+
 # Example usage:
 if __name__ == "__main__":
-    # Example input and output file paths
+    dir_script = os.path.dirname(os.path.abspath(__file__))
+    dir_final_code = os.path.dirname(dir_script)
+    dir_data = os.path.join(dir_final_code, "data/subchallenge1/")
+    infile = sys.argv[1] + ".txt"
     input_files = [
-        "d:/Harikeshav/Networks/Test3/final_code/code/Sample_dig.txt",
+        os.path.join(dir_script, infile),
         # Add more input file paths as needed
     ]
 
     output_files = [
-        "d:/Harikeshav/Networks/Test3/final_code/data/subchallenge1/Sample_undig.txt",
+        os.path.join(dir_data, "Sample_undig.txt"),
         # Corresponding output file paths for each input file
     ]
 

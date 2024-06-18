@@ -23,7 +23,7 @@
 
 # Note: this needs to run only once
 
-python convertToUndirected.py
+python convertToUndirected.py Sample_dig
 python normaliseWeights.py Sample_undig
 
 
@@ -32,7 +32,7 @@ python normaliseWeights.py Sample_undig
 #  and edges for our network  #
 ###############################
 
-python calculate_node_edge.py Sample_undig_normalised.txt
+python calculate_node_edge.py Sample_undig_normalised
 nb_nodes=$?
 nb_edges=$?
 
