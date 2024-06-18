@@ -9,7 +9,8 @@ def calculate_nodes_edges(infile):
     with open(file_path, 'r') as f:
         for edge in f:
             if edge.strip():
-                node1, node2 = edge.strip().split()
+                graph_row = edge.strip().split()
+                node1, node2 = graph_row[0], graph_row[1]
                 nodelist.add(node1)
                 nodelist.add(node2)
                 edges += 1
