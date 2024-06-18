@@ -1,0 +1,11 @@
+# Set default behavior to normalize line endings
+* text=auto
+
+# Explicitly declare text files you want to always normalize
+*.txt text
+
+# Denote files that are binary and should not be modified
+*.bin -text
+
+# Set the default behavior for all files
+* eol=lf
