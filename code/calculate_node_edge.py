@@ -4,7 +4,9 @@ import sys
 def calculate_nodes_edges(infile):
     edges = 0
     nodelist = set()
-    with open(infile, 'r') as f:
+    dir_data = "../data/subchallenge1/"
+    file_path = dir_data + infile + ".txt"
+    with open(file_path, 'r') as f:
         for edge in f:
             if edge.strip():
                 node1, node2 = edge.strip().split()
