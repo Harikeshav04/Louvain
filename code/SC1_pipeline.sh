@@ -32,9 +32,11 @@ python normaliseWeights.py Sample_undig
 #  and edges for our network  #
 ###############################
 
-python calculate_node_edge.py Sample_undig_normalised
-nb_nodes=$?
-nb_edges=$?
+output=$(python calculate_node_edges)
+
+# Parse the output to get the number of nodes and edges
+nb_nodes=$(echo "$output" | grep 'Nodes:' | awk '{print $2}')
+nb_edges=$(echo "$output" | grep 'Edges:' | awk '{print $2}')
 
 ########################
 # Calculating PageRank #
