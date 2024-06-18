@@ -32,7 +32,7 @@ python normaliseWeights.py Sample_undig
 #  and edges for our network  #
 ###############################
 
-output=$(python calculate_node_edges)
+output=$(python calculate_node_edge.py Sample_undig_normalised)
 
 # Parse the output to get the number of nodes and edges
 nb_nodes=$(echo "$output" | grep 'Nodes:' | awk '{print $2}')
