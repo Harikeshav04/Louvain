@@ -27,6 +27,14 @@ python convertToUndirected.py
 python normaliseWeights.py Sample_undig
 
 
+###############################
+# Calculating number of nodes #
+#  and edges for our network  #
+###############################
+
+python calculate_node_edge.py Sample_undig_normalised.txt
+nb_nodes=$?
+nb_edges=$?
 
 ########################
 # Calculating PageRank #
@@ -39,7 +47,7 @@ python normaliseWeights.py Sample_undig
 
 # Network 1
 
- ./pageRank 5254 21826 ../data/subchallenge1/Sample_undig_normalised.txt ../data/subchallenge1/PR_Sample_undig_normalised.txt undirected
+ ./pageRank $nb_nodes $nb_edges ../data/subchallenge1/Sample_undig_normalised.txt ../data/subchallenge1/PR_Sample_undig_normalised.txt undirected
 
 # # Network 2
 
